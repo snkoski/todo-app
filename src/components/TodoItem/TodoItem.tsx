@@ -3,11 +3,9 @@ import { Todo } from '../../types';
 
 function TodoItem({
   todo,
-  toggleDone,
   setTodos
 }: {
   todo: Todo;
-  toggleDone: (id: string) => void;
   setTodos: React.Dispatch<React.SetStateAction<Todo[]>>;
 }) {
   const [message, setMessage] = React.useState(todo.message);
@@ -29,12 +27,21 @@ function TodoItem({
     );
     setIsEditing(false);
   }
+
   function handleIsEditing() {
     let prevIsEditing = isEditing;
     setIsEditing(!prevIsEditing);
     if (!prevIsEditing) {
       setMessage(todo.message);
     }
+  }
+
+  function handleToggleDone(id) {
+    setTodos((prevTodos) =>
+      prevTodos.map((prevTodo) =>
+        prevTodo.id === id ? { ...prevTodo, done: !prevTodo.done } : prevTodo
+      )
+    );
   }
 
   function handleDelete(id: string) {
@@ -59,7 +66,7 @@ function TodoItem({
             <input
               type="checkbox"
               checked={todo.done}
-              onChange={() => toggleDone(todo.id)}
+              onChange={() => handleToggleDone(todo.id)}
               className="w-5"
               id={`done-checkbox-${todo.id}`}
             />
