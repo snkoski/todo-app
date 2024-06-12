@@ -3,13 +3,16 @@ import { Todo } from '../../types';
 
 function TodoItem({
   todo,
-  setTodos
+  handleUpdateTodo,
+  handleRemoveTodo
 }: {
   todo: Todo;
-  setTodos: React.Dispatch<React.SetStateAction<Todo[]>>;
+  handleUpdateTodo: (updatedTodo: Todo) => void;
+  handleRemoveTodo: (id: string) => void;
 }) {
   const [message, setMessage] = React.useState(todo.message);
   const [isEditing, setIsEditing] = React.useState(false);
+  // const [complete, setComplete] = React.useState(todo.done);
   const inputRef = React.useRef<HTMLInputElement>(null);
 
   React.useEffect(() => {
@@ -22,9 +25,8 @@ function TodoItem({
 
   function handleEditTodo(e: React.FormEvent) {
     e.preventDefault();
-    setTodos((prevTodos) =>
-      prevTodos.map((prevTodo) => (prevTodo.id === todo.id ? { ...prevTodo, message } : prevTodo))
-    );
+    let newTodo = { ...todo, message };
+    handleUpdateTodo(newTodo);
     setIsEditing(false);
   }
 
@@ -36,16 +38,13 @@ function TodoItem({
     }
   }
 
-  function handleToggleDone(id: string) {
-    setTodos((prevTodos) =>
-      prevTodos.map((prevTodo) =>
-        prevTodo.id === id ? { ...prevTodo, done: !prevTodo.done } : prevTodo
-      )
-    );
+  function handleToggleDone() {
+    let newTodo = { ...todo, done: !todo.done };
+    handleUpdateTodo(newTodo);
   }
 
   function handleDelete(id: string) {
-    setTodos((prevTodos) => prevTodos.filter((todo) => todo.id !== id));
+    handleRemoveTodo(id);
   }
   return (
     <li className="flex py-3 px-2 bg-slate-600 justify-between text-white text-lg">
@@ -66,7 +65,7 @@ function TodoItem({
             <input
               type="checkbox"
               checked={todo.done}
-              onChange={() => handleToggleDone(todo.id)}
+              onChange={() => handleToggleDone()}
               className="w-5"
               id={`done-checkbox-${todo.id}`}
             />
