@@ -36,7 +36,7 @@ function TodoItem({
     }
   }
 
-  function handleToggleDone(id) {
+  function handleToggleDone(id: string) {
     setTodos((prevTodos) =>
       prevTodos.map((prevTodo) =>
         prevTodo.id === id ? { ...prevTodo, done: !prevTodo.done } : prevTodo
