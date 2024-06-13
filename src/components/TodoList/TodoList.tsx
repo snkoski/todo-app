@@ -16,9 +16,13 @@ function TodoList() {
     setTodos(newTodos);
   };
 
+  const handleAddTodo = (newTodo: Todo) => {
+    setTodos([...todos, newTodo]);
+  };
+
   return (
     <div className="max-w-96 flex flex-col gap-1">
-      <TodoComposer setTodos={setTodos} />
+      <TodoComposer handleAddTodo={handleAddTodo} />
       {todos.map((todo) => (
         <TodoItem
           key={todo.id}

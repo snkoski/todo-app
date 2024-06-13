@@ -9,17 +9,17 @@ function createTodo(message: string): Todo {
   };
 }
 
-function TodoComposer({ setTodos }: { setTodos: React.Dispatch<React.SetStateAction<Todo[]>> }) {
+function TodoComposer({ handleAddTodo }: { handleAddTodo: (newTodo: Todo) => void }) {
   const [message, setMessage] = React.useState('');
 
-  const handleAddTodo = (e: React.FormEvent) => {
+  const handleAdd = (e: React.FormEvent) => {
     e.preventDefault();
     const newTodo = createTodo(message);
-    setTodos((prevTodos) => [...prevTodos, newTodo]);
+    handleAddTodo(newTodo);
     setMessage('');
   };
   return (
-    <form onSubmit={(e) => handleAddTodo(e)}>
+    <form onSubmit={(e) => handleAdd(e)}>
       <input
         type="text"
         value={message}
