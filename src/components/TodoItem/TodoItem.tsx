@@ -4,21 +4,21 @@ import { Todo } from '../../types';
 function TodoItem({
   todo,
   handleUpdateTodo,
-  handleRemoveTodo
+  handleRemoveTodo,
+  handleUpdateShawnPoints
 }: {
   todo: Todo;
   handleUpdateTodo: (updatedTodo: Todo) => void;
   handleRemoveTodo: (id: string) => void;
+  handleUpdateShawnPoints: (operation: 'add' | 'subtract', points: number) => void;
 }) {
+  const FINISHED_TODO_POINTS = 2;
   const [message, setMessage] = React.useState(todo.message);
   const [isEditing, setIsEditing] = React.useState(false);
-  // const [complete, setComplete] = React.useState(todo.done);
   const inputRef = React.useRef<HTMLInputElement>(null);
 
   React.useEffect(() => {
     if (isEditing) {
-      console.log('useEffect');
-      console.log(inputRef.current);
       inputRef.current?.focus();
     }
   }, [isEditing]);
@@ -31,9 +31,9 @@ function TodoItem({
   }
 
   function handleIsEditing() {
-    let prevIsEditing = isEditing;
-    setIsEditing(!prevIsEditing);
-    if (!prevIsEditing) {
+    let lastIsEditing = isEditing;
+    setIsEditing(!lastIsEditing);
+    if (!lastIsEditing) {
       setMessage(todo.message);
     }
   }
@@ -41,11 +41,17 @@ function TodoItem({
   function handleToggleDone() {
     let newTodo = { ...todo, done: !todo.done };
     handleUpdateTodo(newTodo);
+    if (newTodo.done) {
+      handleUpdateShawnPoints('add', FINISHED_TODO_POINTS);
+    } else {
+      handleUpdateShawnPoints('subtract', FINISHED_TODO_POINTS);
+    }
   }
 
   function handleDelete(id: string) {
     handleRemoveTodo(id);
   }
+
   return (
     <li className="flex py-3 px-2 bg-slate-600 justify-between text-white text-lg">
       <div className="flex gap-1">
