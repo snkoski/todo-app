@@ -14,10 +14,10 @@ function Root() {
 
   return (
     <div>
-      <h1>Root Layout</h1>
+      <h1 className="text-center text-2xl">Root Layout</h1>
       <div className="flex">
         <nav>
-          <ul>
+          <ul className="flex-col gap-3 pl-5">
             <li>
               <Link to={`/`}>Home</Link>
             </li>
@@ -41,7 +41,7 @@ function Root() {
             )}
           </ul>
         </nav>
-        <main>
+        <main className="text-center mx-auto">
           <Outlet />
         </main>
       </div>
