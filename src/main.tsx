@@ -4,7 +4,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 import ErrorPage from './components/ErrorPage';
 import Root, { loader as rootLoader } from './components/Root';
-import TodoList from './components/TodoList';
+import TodoList, { loader as todoLoader } from './components/TodoList';
 
 import './index.css';
 import Recipe, { loader as recipeLoader } from './components/Recipe';
@@ -23,7 +23,8 @@ const router = createBrowserRouter([
       },
       {
         path: '/todo',
-        element: <TodoList />
+        element: <TodoList />,
+        loader: todoLoader
       }
     ]
   }

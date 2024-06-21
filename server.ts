@@ -41,6 +41,19 @@ app.get('/recipes', async (req, res) => {
   }
 });
 
+app.get('/todos', async (req, res) => {
+  console.log('Fetching todos');
+  try {
+    const client = await pool.connect();
+    const result = await client.query('SELECT * FROM todos');
+    client.release();
+    res.json(result.rows);
+  } catch (err) {
+    console.error('Error fetching todos', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 app.get('/recipes/:id', async (req, res) => {
   const recipeId = req.params.id;
   console.log('Fetching recipe with id', recipeId);

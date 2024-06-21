@@ -1,29 +1,29 @@
 import React from 'react';
 import { Todo } from '../../types';
 
-function createTodo(message: string): Todo {
+function createTodo(title: string): Todo {
   return {
     id: Math.floor(Math.random() * 100000).toString(),
-    message,
+    title,
     done: false
   };
 }
 
 function TodoComposer({ handleAddTodo }: { handleAddTodo: (newTodo: Todo) => void }) {
-  const [message, setMessage] = React.useState('');
+  const [title, setTitle] = React.useState('');
 
   const handleAdd = (e: React.FormEvent) => {
     e.preventDefault();
-    const newTodo = createTodo(message);
+    const newTodo = createTodo(title);
     handleAddTodo(newTodo);
-    setMessage('');
+    setTitle('');
   };
   return (
     <form onSubmit={(e) => handleAdd(e)}>
       <input
         type="text"
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
         className="border-black border"
       ></input>
       <button>Add Todo</button>

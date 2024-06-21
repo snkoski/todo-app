@@ -13,7 +13,7 @@ function TodoItem({
   handleUpdateShawnPoints: (operation: 'add' | 'subtract', points: number) => void;
 }) {
   const FINISHED_TODO_POINTS = 2;
-  const [message, setMessage] = React.useState(todo.message);
+  const [title, setTitle] = React.useState(todo.title);
   const [isEditing, setIsEditing] = React.useState(false);
   const inputRef = React.useRef<HTMLInputElement>(null);
 
@@ -25,7 +25,7 @@ function TodoItem({
 
   function handleEditTodo(e: React.FormEvent) {
     e.preventDefault();
-    let newTodo = { ...todo, message };
+    let newTodo = { ...todo, title };
     handleUpdateTodo(newTodo);
     setIsEditing(false);
   }
@@ -34,7 +34,7 @@ function TodoItem({
     let lastIsEditing = isEditing;
     setIsEditing(!lastIsEditing);
     if (!lastIsEditing) {
-      setMessage(todo.message);
+      setTitle(todo.title);
     }
   }
 
@@ -60,8 +60,8 @@ function TodoItem({
             <input
               ref={inputRef}
               type="text"
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
               className="border-red-600 border text-black"
             />
             <button>Submit</button>
@@ -79,7 +79,7 @@ function TodoItem({
               htmlFor={`done-checkbox-${todo.id}`}
               className={`${todo.done ? 'line-through' : ''}`}
             >
-              {todo.message}
+              {todo.title}
             </label>
           </>
         )}

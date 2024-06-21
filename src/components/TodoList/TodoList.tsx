@@ -2,9 +2,19 @@ import React from 'react';
 import TodoComposer from '../TodoComposer';
 import TodoItem from '../TodoItem';
 import { Todo } from '../../types';
+import { useLoaderData } from 'react-router-dom';
+
+export async function loader() {
+  const response = await fetch('http://localhost:3000/todos');
+  const savedTodos = await response.json();
+  return { savedTodos };
+}
 
 function TodoList() {
-  const [todos, setTodos] = React.useState<Todo[]>([]);
+  const { savedTodos } = useLoaderData() as { savedTodos: Todo[] };
+  console.log('savedTodos', savedTodos);
+
+  const [todos, setTodos] = React.useState<Todo[]>(savedTodos || []);
   const [shawnPoints, setShawnPoints] = React.useState<number>(0);
 
   const handleUpdateTodo = (updatedTodo: Todo) => {
