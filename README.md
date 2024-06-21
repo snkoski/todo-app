@@ -2,11 +2,11 @@
 /opt/homebrew/opt/postgresql@14/bin/postgres -D /opt/homebrew/var/postgresql@14
 ```
 
-CREATE USER shawn WITH PASSWORD 'password';
-CREATE DATABASE db;
-GRANT ALL PRIVILEGES ON DATABASE db TO shawn;
+```sql
+DROP TABLE IF EXISTS recipes;
+DROP TABLE IF EXISTS todos;
 
-CREATE TABLE recipe (
+CREATE TABLE recipes (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     description TEXT,
@@ -38,12 +38,27 @@ $$ LANGUAGE plpgsql;
 
 -- Create a trigger to call the function before an update
 CREATE TRIGGER set_date_modified
-BEFORE UPDATE ON recipe
+BEFORE UPDATE ON recipes
+FOR EACH ROW
+EXECUTE FUNCTION update_date_modified();
+
+CREATE TABLE todos (
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    done BOOLEAN DEFAULT FALSE,
+    deleted BOOLEAN DEFAULT false,
+    date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    date_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+    
+CREATE TRIGGER set_date_modified_t
+BEFORE UPDATE ON todos
 FOR EACH ROW
 EXECUTE FUNCTION update_date_modified();
 
 -- Insert sample recipes into the recipe table
-INSERT INTO recipe (name, description, ingredients, steps, prep_time, cook_time, servings, difficulty, author, category, cuisine, tags, image_url, source_url)
+INSERT INTO recipes (name, description, ingredients, steps, prep_time, cook_time, servings, difficulty, author, category, cuisine, tags, image_url, source_url)
 VALUES
 -- Recipe 1
 (
@@ -130,3 +145,11 @@ VALUES
     'https://example.com/chocchipcookies.jpg',
     'https://example.com/chocchipcookies-recipe'
 );
+
+-- insert sample todos
+INSERT INTO todos (title, description, done, deleted, date_created, date_modified)
+VALUES 
+    ('Buy groceries', 'Need to buy milk, eggs, and bread', FALSE, FALSE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    ('Clean the house', 'Vacuum, dust, and mop the floors', FALSE, FALSE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    ('Finish project report', 'Complete the final report for the project', TRUE, FALSE, CURRENT_TIMESTAMP - INTERVAL '2 days', CURRENT_TIMESTAMP - INTERVAL '2 days');
+```

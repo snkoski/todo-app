@@ -14,6 +14,8 @@ const pool = new Pool({
 });
 
 app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // test the database connection
 pool.query('SELECT NOW()', (err, res) => {
@@ -50,6 +52,26 @@ app.get('/todos', async (req, res) => {
     res.json(result.rows);
   } catch (err) {
     console.error('Error fetching todos', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+app.post('/todos', async (req, res) => {
+  console.log('Creating a new todo', req.body);
+  const { title } = req.body;
+
+  if (!title) {
+    return res.status(400).json({ error: 'Title is required' });
+  }
+
+  console.log('Creating todo with title', title);
+  try {
+    const client = await pool.connect();
+    const result = await client.query('INSERT INTO todos (title) VALUES ($1) RETURNING *', [title]);
+    client.release();
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error('Error creating todo', err);
     res.status(500).json({ message: 'Server error' });
   }
 });
