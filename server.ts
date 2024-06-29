@@ -47,7 +47,7 @@ app.get('/todos', async (req, res) => {
   console.log('Fetching todos');
   try {
     const client = await pool.connect();
-    const result = await client.query('SELECT * FROM todos');
+    const result = await client.query('SELECT * FROM todos WHERE deleted = false');
     client.release();
     res.json(result.rows);
   } catch (err) {
@@ -72,6 +72,47 @@ app.post('/todos', async (req, res) => {
     res.json(result.rows[0]);
   } catch (err) {
     console.error('Error creating todo', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+app.post('/todos/edit', async (req, res) => {
+  console.log('Editing a todo', req.body);
+  const { id, ...fields } = req.body;
+
+  if (!id) {
+    return res.status(400).json({ error: 'ID is required' });
+  }
+
+  const fieldKeys = Object.keys(fields);
+  console.log('Fields to update:', fieldKeys);
+
+  if (fieldKeys.length === 0) {
+    return res.status(400).json({ error: 'At least one field to update is required' });
+  }
+
+  const setClause = fieldKeys.map((key, index) => `${key} = $${index + 1}`).join(', ');
+  const values = Object.values(fields);
+  values.push(id);
+  console.log('VALUES.LENGTH', values.length);
+
+  const query = `UPDATE todos SET ${setClause} WHERE id = $${values.length} RETURNING *`;
+
+  console.log('Query:', query);
+  console.log('Values:', values);
+
+  try {
+    const client = await pool.connect();
+    const result = await client.query(query, values);
+    client.release();
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Todo not found' });
+    }
+
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error('Error editing todo', err);
     res.status(500).json({ message: 'Server error' });
   }
 });
