@@ -5,19 +5,14 @@ import { Todo } from '../../types';
 import { useLoaderData } from 'react-router-dom';
 
 export async function loader() {
-  console.log('todoList loader');
-
   const response = await fetch('http://localhost:3000/todos');
   const savedTodos = await response.json();
   return { savedTodos };
 }
 
 export async function action({ request }: { request: Request }) {
-  console.log('todo POST action - request', request);
-
   const formData = await request.formData();
   const data = Object.fromEntries(formData);
-  console.log('todo POST action - data', data);
   if (data.intent === 'create') {
     const title = data.title as string;
     const todo = await createTodo(title);
@@ -36,8 +31,6 @@ export async function action({ request }: { request: Request }) {
 }
 
 async function editTodo(data: { [k: string]: FormDataEntryValue }): Promise<Todo> {
-  console.log('editTodo data', data);
-
   const response = await fetch('http://localhost:3000/todos/edit', {
     method: 'POST',
     headers: {
@@ -70,8 +63,6 @@ async function createTodo(title: string): Promise<Todo> {
 }
 
 async function deleteTodo(id: string) {
-  console.log('deleteTodo id', id);
-
   const response = await fetch('http://localhost:3000/todos/delete', {
     method: 'POST',
     headers: {
@@ -86,24 +77,7 @@ async function deleteTodo(id: string) {
 
 function TodoList() {
   const { savedTodos } = useLoaderData() as { savedTodos: Todo[] };
-  console.log('savedTodos', savedTodos);
-
-  const [todos, setTodos] = React.useState<Todo[]>(() => {
-    console.log('initializing todos, savedTodos', savedTodos);
-
-    return savedTodos || [];
-  });
   const [shawnPoints, setShawnPoints] = React.useState<number>(0);
-
-  const handleUpdateTodo = (updatedTodo: Todo) => {
-    let newTodos = todos.map((todo) => (todo.id === updatedTodo.id ? updatedTodo : todo));
-    setTodos(newTodos);
-  };
-
-  const handleRemoveTodo = (id: string) => {
-    let newTodos = todos.filter((todo) => todo.id !== id);
-    setTodos(newTodos);
-  };
 
   const handleUpdateShawnPoints = (operation: 'add' | 'subtract', points: number) => {
     if (operation === 'add') {
@@ -122,13 +96,7 @@ function TodoList() {
       {savedTodos
         .sort((a, b) => (Number(a.id) === Number(b.id) ? 0 : Number(a.id) > Number(b.id) ? 1 : -1))
         .map((todo) => (
-          <TodoItem
-            key={todo.id}
-            todo={todo}
-            handleUpdateShawnPoints={handleUpdateShawnPoints}
-            handleUpdateTodo={handleUpdateTodo}
-            handleRemoveTodo={handleRemoveTodo}
-          />
+          <TodoItem key={todo.id} todo={todo} handleUpdateShawnPoints={handleUpdateShawnPoints} />
         ))}
     </div>
   );

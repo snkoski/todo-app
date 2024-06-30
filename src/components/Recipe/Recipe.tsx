@@ -12,7 +12,6 @@ function Recipe() {
   const { recipe } = useLoaderData() as { recipe: IRecipe };
   const ingredients = recipe.ingredients.split(', ');
   const steps = recipe.steps.split(', ');
-  console.log(recipe);
 
   return (
     <div>

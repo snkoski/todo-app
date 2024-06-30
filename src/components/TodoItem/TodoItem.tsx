@@ -4,17 +4,10 @@ import { useFetcher } from 'react-router-dom';
 
 type TodoItemProps = {
   todo: Todo;
-  handleUpdateTodo: (updatedTodo: Todo) => void;
-  handleRemoveTodo: (id: string) => void;
   handleUpdateShawnPoints: (operation: 'add' | 'subtract', points: number) => void;
 };
 
-function TodoItem({
-  todo,
-  handleUpdateTodo,
-  handleRemoveTodo,
-  handleUpdateShawnPoints
-}: TodoItemProps) {
+function TodoItem({ todo, handleUpdateShawnPoints }: TodoItemProps) {
   const FINISHED_TODO_POINTS = 2;
   const fetcher = useFetcher();
   const [title, setTitle] = React.useState(todo.title);
@@ -41,16 +34,11 @@ function TodoItem({
 
   function handleToggleDone() {
     let newTodo = { ...todo, done: !todo.done };
-    handleUpdateTodo(newTodo);
     if (newTodo.done) {
       handleUpdateShawnPoints('add', FINISHED_TODO_POINTS);
     } else {
       handleUpdateShawnPoints('subtract', FINISHED_TODO_POINTS);
     }
-  }
-
-  function handleDelete(id: string) {
-    handleRemoveTodo(id);
   }
 
   return (

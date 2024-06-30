@@ -1,5 +1,5 @@
-import { Form, Link, Outlet, useLoaderData } from 'react-router-dom';
-import { Recipe, Todo } from '../../types';
+import { Link, Outlet, useLoaderData } from 'react-router-dom';
+import { Recipe } from '../../types';
 
 export async function loader() {
   const results = await fetch('http://localhost:3000/recipes');
@@ -9,8 +9,6 @@ export async function loader() {
 
 function Root() {
   const { recipes } = useLoaderData() as { recipes: Recipe[] };
-
-  console.log(recipes);
 
   return (
     <div>

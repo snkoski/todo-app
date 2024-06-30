@@ -1,5 +1,4 @@
 import React from 'react';
-import { Todo } from '../../types';
 import { Form } from 'react-router-dom';
 
 function TodoComposer() {
