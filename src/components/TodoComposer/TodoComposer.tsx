@@ -1,11 +1,12 @@
 import React from 'react';
-import { Form } from 'react-router-dom';
+import { useFetcher } from 'react-router-dom';
 
 function TodoComposer() {
+  const fetcher = useFetcher();
   const [title, setTitle] = React.useState('');
 
   return (
-    <Form method="post" onSubmit={() => setTitle('')}>
+    <fetcher.Form method="post" onSubmit={() => setTitle('')}>
       <input
         name="title"
         type="text"
@@ -16,7 +17,7 @@ function TodoComposer() {
       <button type="submit" name="intent" value="create">
         Add Todo
       </button>
-    </Form>
+    </fetcher.Form>
   );
 }
 
