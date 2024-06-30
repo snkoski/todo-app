@@ -1,4 +1,4 @@
-import { Link, Outlet, useLoaderData } from 'react-router-dom';
+import { Outlet, useLoaderData } from 'react-router-dom';
 import { Recipe } from '../../types';
 import RecipesList from '../../components/RecipesList';
 

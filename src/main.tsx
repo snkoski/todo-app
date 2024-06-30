@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 import ErrorPage from './components/ErrorPage';
-import Root, { loader as rootLoader } from './components/Root';
+import Root from './components/Root';
 import TodoList, { loader as todoLoader, action as todoAction } from './components/TodoList';
 
 import './index.css';
@@ -15,7 +15,6 @@ const router = createBrowserRouter([
     path: '/',
     element: <Root />,
     errorElement: <ErrorPage />,
-    loader: rootLoader,
     children: [
       {
         path: '/recipes',

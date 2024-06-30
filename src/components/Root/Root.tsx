@@ -1,15 +1,6 @@
-import { Link, Outlet, useLoaderData } from 'react-router-dom';
-import { Recipe } from '../../types';
-
-export async function loader() {
-  const results = await fetch('http://localhost:3000/recipes');
-  const recipes = await results.json();
-  return { recipes };
-}
+import { Link, Outlet } from 'react-router-dom';
 
 function Root() {
-  const { recipes } = useLoaderData() as { recipes: Recipe[] };
-
   return (
     <div>
       <h1 className="text-center text-2xl">Root Layout</h1>
