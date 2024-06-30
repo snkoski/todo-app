@@ -117,6 +117,31 @@ app.post('/todos/edit', async (req, res) => {
   }
 });
 
+app.post('/todos/delete', async (req, res) => {
+  const { id } = req.body;
+
+  if (!id) {
+    return res.status(400).json({ error: 'ID is required' });
+  }
+
+  try {
+    const client = await pool.connect();
+    const result = await client.query('UPDATE todos SET deleted = true WHERE id = $1 RETURNING *', [
+      id
+    ]);
+    client.release();
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: 'Todo not found' });
+    }
+
+    res.status(204).send();
+  } catch (err) {
+    console.error('Error deleting todo', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 app.get('/recipes/:id', async (req, res) => {
   const recipeId = req.params.id;
   console.log('Fetching recipe with id', recipeId);

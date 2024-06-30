@@ -28,6 +28,11 @@ export async function action({ request }: { request: Request }) {
     const todo = await editTodo(updates);
     return { todo };
   }
+  if (data.intent === 'delete') {
+    const id = data.id as string;
+    await deleteTodo(id);
+    return null;
+  }
 }
 
 async function editTodo(data: { [k: string]: FormDataEntryValue }): Promise<Todo> {
@@ -62,6 +67,21 @@ async function createTodo(title: string): Promise<Todo> {
   const todo = await response.json();
 
   return todo;
+}
+
+async function deleteTodo(id: string) {
+  console.log('deleteTodo id', id);
+
+  const response = await fetch('http://localhost:3000/todos/delete', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ id })
+  });
+  if (!response.ok) {
+    throw new Error('Failed to delete todo');
+  }
 }
 
 function TodoList() {

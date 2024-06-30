@@ -94,14 +94,15 @@ function TodoItem({
           </fetcher.Form>
         )}
       </div>
-      <div className="flex gap-1">
-        <button onClick={() => handleIsEditing()} className="text-yellow-500">
+      <fetcher.Form className="flex gap-1" method="post" action="/todo">
+        <input type="hidden" name="id" value={todo.id} />
+        <button onClick={() => handleIsEditing()} className="text-yellow-500" type="button">
           Edit
         </button>
-        <button className="w-5 bg-white" onClick={() => handleDelete(todo.id)}>
+        <button className="w-5 bg-white" type="submit" name="intent" value="delete">
           🗑️
         </button>
-      </div>
+      </fetcher.Form>
     </li>
   );
 }
