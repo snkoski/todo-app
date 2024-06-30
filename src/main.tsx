@@ -8,6 +8,7 @@ import TodoList, { loader as todoLoader, action as todoAction } from './componen
 
 import './index.css';
 import Recipe, { loader as recipeLoader } from './components/Recipe';
+import Recipes, { loader as recipesLoader } from './routes/Recipes';
 
 const router = createBrowserRouter([
   {
@@ -17,10 +18,18 @@ const router = createBrowserRouter([
     loader: rootLoader,
     children: [
       {
-        path: '/recipes/:recipeId',
-        element: <Recipe />,
-        loader: recipeLoader
+        path: '/recipes',
+        element: <Recipes />,
+        loader: recipesLoader,
+        children: [
+          {
+            path: '/recipes/:recipeId',
+            element: <Recipe />,
+            loader: recipeLoader
+          }
+        ]
       },
+
       {
         path: '/todo',
         element: <TodoList />,

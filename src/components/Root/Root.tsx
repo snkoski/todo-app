@@ -22,21 +22,9 @@ function Root() {
             <li>
               <Link to={`todo`}>Todo List</Link>
             </li>
-            {recipes.length ? (
-              <>
-                {recipes.map((recipe) => {
-                  return (
-                    <li key={recipe.id}>
-                      <Link to={`/recipes/${recipe.id}`}>{recipe.name}</Link>
-                    </li>
-                  );
-                })}
-              </>
-            ) : (
-              <p>
-                <i>No recipes found</i>
-              </p>
-            )}
+            <li>
+              <Link to={`recipes`}>Recipes</Link>
+            </li>
           </ul>
         </nav>
         <main className="text-center mx-auto">
