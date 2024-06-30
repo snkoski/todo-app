@@ -5,7 +5,7 @@ function TodoComposer() {
   const [title, setTitle] = React.useState('');
 
   return (
-    <Form method="post">
+    <Form method="post" onSubmit={() => setTitle('')}>
       <input
         name="title"
         type="text"
