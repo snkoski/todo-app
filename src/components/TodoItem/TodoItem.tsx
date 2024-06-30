@@ -1,91 +1,96 @@
 import React from 'react';
 import { Todo } from '../../types';
+import { useFetcher } from 'react-router-dom';
 
-function TodoItem({
-  todo,
-  handleUpdateTodo,
-  handleRemoveTodo
-}: {
+type TodoItemProps = {
   todo: Todo;
-  handleUpdateTodo: (updatedTodo: Todo) => void;
-  handleRemoveTodo: (id: string) => void;
-}) {
-  const [message, setMessage] = React.useState(todo.message);
+  handleUpdateShawnPoints: (operation: 'add' | 'subtract', points: number) => void;
+};
+
+function TodoItem({ todo, handleUpdateShawnPoints }: TodoItemProps) {
+  const FINISHED_TODO_POINTS = 2;
+  const fetcher = useFetcher();
+  const [title, setTitle] = React.useState(todo.title);
   const [isEditing, setIsEditing] = React.useState(false);
-  // const [complete, setComplete] = React.useState(todo.done);
   const inputRef = React.useRef<HTMLInputElement>(null);
 
   React.useEffect(() => {
     if (isEditing) {
-      console.log('useEffect');
-      console.log(inputRef.current);
       inputRef.current?.focus();
     }
   }, [isEditing]);
 
-  function handleEditTodo(e: React.FormEvent) {
-    e.preventDefault();
-    let newTodo = { ...todo, message };
-    handleUpdateTodo(newTodo);
+  React.useEffect(() => {
     setIsEditing(false);
-  }
+  }, [todo]);
 
   function handleIsEditing() {
-    let prevIsEditing = isEditing;
-    setIsEditing(!prevIsEditing);
-    if (!prevIsEditing) {
-      setMessage(todo.message);
+    let lastIsEditing = isEditing;
+    setIsEditing(!lastIsEditing);
+    if (!lastIsEditing) {
+      setTitle(todo.title);
     }
   }
 
   function handleToggleDone() {
     let newTodo = { ...todo, done: !todo.done };
-    handleUpdateTodo(newTodo);
+    if (newTodo.done) {
+      handleUpdateShawnPoints('add', FINISHED_TODO_POINTS);
+    } else {
+      handleUpdateShawnPoints('subtract', FINISHED_TODO_POINTS);
+    }
   }
 
-  function handleDelete(id: string) {
-    handleRemoveTodo(id);
-  }
   return (
     <li className="flex py-3 px-2 bg-slate-600 justify-between text-white text-lg">
       <div className="flex gap-1">
         {isEditing ? (
-          <form onSubmit={(e) => handleEditTodo(e)} className="flex gap-1">
+          <fetcher.Form method="post" className="flex gap-1">
+            <input type="hidden" name="id" value={todo.id} />
             <input
+              name="title"
               ref={inputRef}
               type="text"
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
               className="border-red-600 border text-black"
             />
-            <button>Submit</button>
-          </form>
+            <button type="submit" name="intent" value="edit">
+              Submit
+            </button>
+          </fetcher.Form>
         ) : (
-          <>
-            <input
-              type="checkbox"
-              checked={todo.done}
-              onChange={() => handleToggleDone()}
+          <fetcher.Form method="post" action="/todo">
+            <input type="hidden" name="id" value={todo.id} />
+            <input type="hidden" name="done" value={todo.done ? 'false' : 'true'} />
+            <button
+              name="intent"
+              value="edit"
+              type="submit"
+              onClick={() => handleToggleDone()}
               className="w-5"
               id={`done-checkbox-${todo.id}`}
-            />
+            >
+              {todo.done ? '✅' : '⬜️'}
+            </button>
             <label
               htmlFor={`done-checkbox-${todo.id}`}
               className={`${todo.done ? 'line-through' : ''}`}
             >
-              {todo.message}
+              {todo.title}
             </label>
-          </>
+          </fetcher.Form>
         )}
       </div>
-      <div className="flex gap-1">
-        <button onClick={() => handleIsEditing()} className="text-yellow-500">
+      <fetcher.Form className="flex gap-1" method="post" action="/todo">
+        <input type="hidden" name="id" value={todo.id} />
+        <button onClick={() => handleIsEditing()} className="text-yellow-500" type="button">
           Edit
         </button>
-        <button className="w-5 bg-white" onClick={() => handleDelete(todo.id)}>
+        <button className="w-5 bg-white" type="submit" name="intent" value="delete">
           🗑️
         </button>
-      </div>
+      </fetcher.Form>
     </li>
   );
 }

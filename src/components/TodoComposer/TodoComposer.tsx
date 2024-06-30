@@ -1,33 +1,23 @@
 import React from 'react';
-import { Todo } from '../../types';
+import { useFetcher } from 'react-router-dom';
 
-function createTodo(message: string): Todo {
-  return {
-    id: Math.floor(Math.random() * 100000).toString(),
-    message,
-    done: false
-  };
-}
+function TodoComposer() {
+  const fetcher = useFetcher();
+  const [title, setTitle] = React.useState('');
 
-function TodoComposer({ handleAddTodo }: { handleAddTodo: (newTodo: Todo) => void }) {
-  const [message, setMessage] = React.useState('');
-
-  const handleAdd = (e: React.FormEvent) => {
-    e.preventDefault();
-    const newTodo = createTodo(message);
-    handleAddTodo(newTodo);
-    setMessage('');
-  };
   return (
-    <form onSubmit={(e) => handleAdd(e)}>
+    <fetcher.Form method="post" onSubmit={() => setTitle('')}>
       <input
+        name="title"
         type="text"
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
         className="border-black border"
-      ></input>
-      <button>Add Todo</button>
-    </form>
+      />
+      <button type="submit" name="intent" value="create">
+        Add Todo
+      </button>
+    </fetcher.Form>
   );
 }
 
