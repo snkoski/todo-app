@@ -1,6 +1,6 @@
 import React from 'react';
 import { Todo } from '../../types';
-import { Form, useFetcher } from 'react-router-dom';
+import { useFetcher } from 'react-router-dom';
 
 type TodoItemProps = {
   todo: Todo;
@@ -30,13 +30,6 @@ function TodoItem({
   React.useEffect(() => {
     setIsEditing(false);
   }, [todo]);
-
-  function handleEditTodo(e: React.FormEvent) {
-    e.preventDefault();
-    let newTodo = { ...todo, title };
-    handleUpdateTodo(newTodo);
-    setIsEditing(false);
-  }
 
   function handleIsEditing() {
     let lastIsEditing = isEditing;
@@ -74,7 +67,7 @@ function TodoItem({
               onChange={(e) => setTitle(e.target.value)}
               className="border-red-600 border text-black"
             />
-            <button type="submit" name="intent" value="editTitle">
+            <button type="submit" name="intent" value="edit">
               Submit
             </button>
           </fetcher.Form>
@@ -84,7 +77,7 @@ function TodoItem({
             <input type="hidden" name="done" value={todo.done ? 'false' : 'true'} />
             <button
               name="intent"
-              value={'done-checkbox'}
+              value="edit"
               type="submit"
               onClick={() => handleToggleDone()}
               className="w-5"

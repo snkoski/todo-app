@@ -23,13 +23,7 @@ export async function action({ request }: { request: Request }) {
     const todo = await createTodo(title);
     return { todo };
   }
-  if (data.intent === 'editTitle') {
-    const { intent, ...updates } = data;
-
-    const todo = await editTodo(updates);
-    return { todo };
-  }
-  if (data.intent === 'done-checkbox') {
+  if (data.intent === 'edit') {
     const { intent, ...updates } = data;
     const todo = await editTodo(updates);
     return { todo };
