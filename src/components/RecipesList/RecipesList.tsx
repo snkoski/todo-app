@@ -15,7 +15,7 @@ function RecipesList({ recipes }: RecipesListProps) {
   }
 
   return (
-    <ul className="flex-col">
+    <ul className="flex-col text-left">
       {recipes.map((recipe) => {
         return (
           <li key={recipe.id}>

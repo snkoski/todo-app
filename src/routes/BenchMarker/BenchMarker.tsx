@@ -1,6 +1,5 @@
 import { Outlet, useLoaderData } from 'react-router-dom';
 import { Recipe } from '../../types';
-import RecipesList from '../../components/RecipesList';
 
 export async function loader() {
   const results = await fetch('http://localhost:3000/recipes');
@@ -8,19 +7,20 @@ export async function loader() {
   return { recipes };
 }
 
-function Recipes() {
+function BenchMarker() {
   const { recipes } = useLoaderData() as { recipes: Recipe[] };
+  console.log('recipes', recipes);
+  console.log({ recipes });
+
   return (
     <>
-      <div>Recipes</div>
+      <div>BenchMarker</div>
       <div className="flex justify-items-start ">
-        <div className="border border-violet-700">
-          <RecipesList recipes={recipes} />
-        </div>
+        <div className="border border-violet-700"></div>
         <Outlet />
       </div>
     </>
   );
 }
 
-export default Recipes;
+export default BenchMarker;

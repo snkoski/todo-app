@@ -11,7 +11,8 @@ export async function loader({ params }: { params: Params<'recipeId'> }) {
 function Recipe() {
   const { recipe } = useLoaderData() as { recipe: IRecipe };
   const ingredients = recipe.ingredients.split(', ');
-  const steps = recipe.steps.split(', ');
+  // TODO: Find better way to store/split the steps
+  const steps = recipe.steps.split('. ');
 
   return (
     <div>
@@ -25,7 +26,7 @@ function Recipe() {
           ))}
         </ul>
         <h2>Instructions</h2>
-        <ol>
+        <ol >
           {steps.map((step, index) => (
             <li key={index}>{step}</li>
           ))}
