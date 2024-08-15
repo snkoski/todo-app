@@ -11,3 +11,10 @@ export interface Recipe {
   steps: string;
   description: string;
 }
+
+export interface BenchReview {
+  id: number;
+  benchId: number;
+  rating: number;
+  comment?: string;
+}

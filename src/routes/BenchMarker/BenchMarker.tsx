@@ -1,22 +1,21 @@
-import { Outlet, useLoaderData } from 'react-router-dom';
-import { Recipe } from '../../types';
-
-export async function loader() {
-  const results = await fetch('http://localhost:3000/recipes');
-  const recipes = await results.json();
-  return { recipes };
-}
+import { Outlet } from 'react-router-dom';
 
 function BenchMarker() {
-  const { recipes } = useLoaderData() as { recipes: Recipe[] };
-  console.log('recipes', recipes);
-  console.log({ recipes });
-
+  const fakeIds = [1, 2, 3, 4, 5];
   return (
     <>
       <div>BenchMarker</div>
       <div className="flex justify-items-start ">
-        <div className="border border-violet-700"></div>
+        <div className="border border-violet-700">
+          <h2>Your Reviews</h2>
+          <ul>
+            {fakeIds.map((id) => (
+              <li key={id}>
+                <a href={`/benchmarker/${id}`}>BenchMarker {id}</a>
+              </li>
+            ))}
+          </ul>
+        </div>
         <Outlet />
       </div>
     </>

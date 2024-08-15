@@ -10,6 +10,7 @@ import './index.css';
 import Recipe, { loader as recipeLoader } from './components/Recipe';
 import Recipes, { loader as recipesLoader } from './routes/Recipes';
 import BenchMarker from './routes/BenchMarker';
+import BenchReview, { loader as benchReviewLoader } from './components/BenchReview';
 
 const router = createBrowserRouter([
   {
@@ -39,7 +40,14 @@ const router = createBrowserRouter([
 
       {
         path: '/benchmarker',
-        element: <BenchMarker />
+        element: <BenchMarker />,
+        children: [
+          {
+            path: '/benchmarker/:reviewId',
+            element: <BenchReview />,
+            loader: benchReviewLoader
+          }
+        ]
       }
     ]
   }
