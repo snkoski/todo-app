@@ -11,6 +11,7 @@ import Recipe, { loader as recipeLoader } from './components/Recipe';
 import Recipes, { loader as recipesLoader } from './routes/Recipes';
 import BenchMarker from './routes/BenchMarker';
 import BenchReview, { loader as benchReviewLoader } from './components/BenchReview';
+import Benches from './routes/Benches';
 
 const router = createBrowserRouter([
   {
@@ -46,7 +47,8 @@ const router = createBrowserRouter([
             path: '/benchmarker/:reviewId',
             element: <BenchReview />,
             loader: benchReviewLoader
-          }
+          },
+          { path: 'benches', element: <Benches /> }
         ]
       }
     ]

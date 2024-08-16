@@ -3,10 +3,10 @@
 ```
 
 ```sql
-DROP TABLE IF EXISTS recipes;
-DROP TABLE IF EXISTS todos;
+DROP TABLE IF EXISTS recipe;
+DROP TABLE IF EXISTS todo;
 
-CREATE TABLE recipes (
+CREATE TABLE recipe (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     description TEXT,
@@ -38,11 +38,11 @@ $$ LANGUAGE plpgsql;
 
 -- Create a trigger to call the function before an update
 CREATE TRIGGER set_date_modified
-BEFORE UPDATE ON recipes
+BEFORE UPDATE ON recipe
 FOR EACH ROW
 EXECUTE FUNCTION update_date_modified();
 
-CREATE TABLE todos (
+CREATE TABLE todo (
     id SERIAL PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
     description TEXT,
@@ -53,12 +53,12 @@ CREATE TABLE todos (
 );
     
 CREATE TRIGGER set_date_modified_t
-BEFORE UPDATE ON todos
+BEFORE UPDATE ON todo
 FOR EACH ROW
 EXECUTE FUNCTION update_date_modified();
 
--- Insert sample recipes into the recipe table
-INSERT INTO recipes (name, description, ingredients, steps, prep_time, cook_time, servings, difficulty, author, category, cuisine, tags, image_url, source_url)
+-- Insert sample recipe into the recipe table
+INSERT INTO recipe (name, description, ingredients, steps, prep_time, cook_time, servings, difficulty, author, category, cuisine, tags, image_url, source_url)
 VALUES
 -- Recipe 1
 (
@@ -146,10 +146,23 @@ VALUES
     'https://example.com/chocchipcookies-recipe'
 );
 
--- insert sample todos
-INSERT INTO todos (title, description, done, deleted, date_created, date_modified)
+-- insert sample todo
+INSERT INTO todo (title, description, done, deleted, date_created, date_modified)
 VALUES 
     ('Buy groceries', 'Need to buy milk, eggs, and bread', FALSE, FALSE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
     ('Clean the house', 'Vacuum, dust, and mop the floors', FALSE, FALSE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
     ('Finish project report', 'Complete the final report for the project', TRUE, FALSE, CURRENT_TIMESTAMP - INTERVAL '2 days', CURRENT_TIMESTAMP - INTERVAL '2 days');
 ```
+
+#Prisma CLI Commands
+Inititialize Prisma (Create prisma folder and initial schema.prisma)
+ ```bash
+ bunx prisma init --datasource-provider postgresql
+ ```
+
+Pull tables from already created db
+ ```bash
+ bunx prisma db pull
+ ```
+
+ 

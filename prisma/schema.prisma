@@ -1,0 +1,39 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model recipes {
+  id            Int       @id @default(autoincrement())
+  name          String    @db.VarChar(100)
+  description   String?
+  ingredients   String
+  steps         String
+  prep_time     Int?
+  cook_time     Int?
+  total_time    Int?      @default(dbgenerated("(prep_time + cook_time)"))
+  servings      Int?
+  difficulty    String?   @db.VarChar(50)
+  author        String?   @db.VarChar(100)
+  category      String?   @db.VarChar(50)
+  cuisine       String?   @db.VarChar(50)
+  tags          String?
+  image_url     String?
+  source_url    String?
+  date_created  DateTime? @default(now()) @db.Timestamp(6)
+  date_modified DateTime? @default(now()) @db.Timestamp(6)
+}
+
+model todos {
+  id            Int       @id @default(autoincrement())
+  title         String    @db.VarChar(255)
+  description   String?
+  done          Boolean?  @default(false)
+  deleted       Boolean?  @default(false)
+  date_created  DateTime? @default(now()) @db.Timestamp(6)
+  date_modified DateTime? @default(now()) @db.Timestamp(6)
+}
