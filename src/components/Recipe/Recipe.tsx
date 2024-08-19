@@ -10,9 +10,11 @@ export async function loader({ params }: { params: Params<'recipeId'> }) {
 
 function Recipe() {
   const { recipe } = useLoaderData() as { recipe: IRecipe };
-  const ingredients = recipe.ingredients.split(', ');
+  console.log('recipe', recipe);
+
   // TODO: Find better way to store/split the steps
-  const steps = recipe.steps.split('. ');
+
+  // return <div>hello</div>;
 
   return (
     <div>
@@ -21,14 +23,16 @@ function Recipe() {
         <p>{recipe.description}</p>
         <h2>Ingredients</h2>
         <ul>
-          {ingredients.map((ingredient, index) => (
-            <li key={index}>{ingredient}</li>
+          {recipe.ingredients.map((ingredient, index) => (
+            <li key={index}>{ingredient.ingredient}</li>
           ))}
         </ul>
         <h2>Instructions</h2>
-        <ol >
-          {steps.map((step, index) => (
-            <li key={index}>{step}</li>
+        <ol>
+          {recipe.steps.map((step, index) => (
+            <li key={index}>
+              {step.step_number}. {step.content}
+            </li>
           ))}
         </ol>
       </div>
