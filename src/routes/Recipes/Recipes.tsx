@@ -15,6 +15,7 @@ function Recipes() {
       <div>Recipes</div>
       <div className="flex justify-items-start ">
         <div className="border border-violet-700">
+          
           <RecipesList recipes={recipes} />
         </div>
         <Outlet />

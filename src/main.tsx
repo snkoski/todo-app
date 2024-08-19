@@ -12,6 +12,7 @@ import Recipes, { loader as recipesLoader } from './routes/Recipes';
 import BenchMarker from './routes/BenchMarker';
 import BenchReview, { loader as benchReviewLoader } from './components/BenchReview';
 import Benches from './routes/Benches';
+import NewRecipe from './components/NewRecipe';
 
 const router = createBrowserRouter([
   {
@@ -28,6 +29,10 @@ const router = createBrowserRouter([
             path: '/recipes/:recipeId',
             element: <Recipe />,
             loader: recipeLoader
+          },
+          {
+            path: '/recipes/new',
+            element: <NewRecipe />
           }
         ]
       },

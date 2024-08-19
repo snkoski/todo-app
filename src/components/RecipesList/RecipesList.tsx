@@ -15,15 +15,18 @@ function RecipesList({ recipes }: RecipesListProps) {
   }
 
   return (
-    <ul className="flex-col text-left">
-      {recipes.map((recipe) => {
-        return (
-          <li key={recipe.id}>
-            <Link to={`/recipes/${recipe.id}`}>{recipe.name}</Link>
-          </li>
-        );
-      })}
-    </ul>
+    <>
+      <Link to={'/recipes/new'}>NEW</Link>
+      <ul className="flex-col text-left">
+        {recipes.map((recipe) => {
+          return (
+            <li key={recipe.id}>
+              <Link to={`/recipes/${recipe.id}`}>{recipe.name}</Link>
+            </li>
+          );
+        })}
+      </ul>
+    </>
   );
 }
 
