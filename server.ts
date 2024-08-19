@@ -1,12 +1,12 @@
-import express from 'express';
+import express, {Express} from 'express';
 import { Pool } from 'pg';
 import cors from 'cors';
 
-const app = express();
+const app: Express = express();
 const port = 3000;
 
 const pool = new Pool({
-  user: 'shawn',
+  user: 'skoski',
   host: 'localhost',
   database: 'db',
   password: 'password',
@@ -47,7 +47,12 @@ app.get('/todos', async (req, res) => {
   console.log('Fetching todos');
   try {
     const client = await pool.connect();
+    console.log('Connected to database:', client.database);
+    console.log('Client:', client);
+
     const result = await client.query('SELECT * FROM todos WHERE deleted = false');
+    console.log('Result:', result);
+
     client.release();
     res.json(result.rows);
   } catch (err) {
