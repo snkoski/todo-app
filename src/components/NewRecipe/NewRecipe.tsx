@@ -1,7 +1,22 @@
-import React, { useState } from 'react';
+import React, { ChangeEvent, FormEvent } from 'react';
+import { RecipeIngredient } from '../../types';
+
+type FormData = {
+  name: string;
+  description: string;
+  author: string;
+  image_url: string;
+  source_url: string;
+  ingredients: RecipeIngredient[];
+  steps: string[];
+  currentIngredient: string;
+  currentStep: string;
+  currentMeasurement: string;
+  currentQuantity: number;
+};
 
 const RecipeForm = () => {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = React.useState<FormData>({
     name: 'test',
     description: '',
     author: '',
@@ -10,11 +25,13 @@ const RecipeForm = () => {
     ingredients: [],
     steps: [],
     currentIngredient: '',
-    currentStep: ''
+    currentStep: '',
+    currentMeasurement: '',
+    currentQuantity: 0
   });
 
   // Handle input changes
-  const handleChange = (e) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
@@ -24,11 +41,18 @@ const RecipeForm = () => {
 
   // Handle ingredient addition
   const handleAddIngredient = () => {
+    const newIngredient = {
+      ingredient: formData.currentIngredient,
+      measurement: formData.currentMeasurement,
+      quantity: formData.currentQuantity
+    };
     if (formData.currentIngredient.trim()) {
       setFormData((prevData) => ({
         ...prevData,
-        ingredients: [...prevData.ingredients, prevData.currentIngredient],
-        currentIngredient: ''
+        ingredients: [...prevData.ingredients, newIngredient],
+        currentIngredient: '',
+        currentMeasurement: '',
+        currentQuantity: ''
       }));
     }
   };
@@ -45,7 +69,7 @@ const RecipeForm = () => {
   };
 
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     // Submit the form data
     console.log(formData);
@@ -79,7 +103,7 @@ const RecipeForm = () => {
           <textarea
             id="recipe-description"
             name="description"
-            rows="4"
+            rows={4}
             value={formData.description}
             onChange={handleChange}
             className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -130,7 +154,7 @@ const RecipeForm = () => {
 
         <div>
           <label htmlFor="recipe-ingredients" className="block text-gray-700 font-semibold mb-2">
-            Ingredients:
+            Ingredient:
           </label>
           <div className="flex space-x-2">
             <input
@@ -138,6 +162,28 @@ const RecipeForm = () => {
               type="text"
               name="currentIngredient"
               value={formData.currentIngredient}
+              onChange={handleChange}
+              className="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <label htmlFor="recipe-quantity" className="block text-gray-700 font-semibold mb-2">
+              Quantity:
+            </label>
+            <input
+              id="recipe-quantity"
+              type="number"
+              name="currentQuantity"
+              value={formData.currentQuantity}
+              onChange={handleChange}
+              className="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <label htmlFor="recipe-measurement" className="block text-gray-700 font-semibold mb-2">
+              Measurement:
+            </label>
+            <input
+              id="recipe-measurement"
+              type="text"
+              name="currentMeasurement"
+              value={formData.currentMeasurement}
               onChange={handleChange}
               className="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
@@ -151,7 +197,9 @@ const RecipeForm = () => {
           </div>
           <ul>
             {formData.ingredients.map((ingredient, index) => (
-              <li key={index}>{ingredient}</li>
+              <li key={index}>
+                {ingredient.quantity} {ingredient.measurement} {ingredient.ingredient}
+              </li>
             ))}
           </ul>
         </div>
@@ -199,7 +247,9 @@ const RecipeForm = () => {
         <p>{formData.source_url}</p>
         <ul>
           {formData.ingredients.map((ingredient, index) => (
-            <li key={index}>{ingredient}</li>
+            <li key={index}>
+              {ingredient.quantity} {ingredient.measurement} {ingredient.ingredient}
+            </li>
           ))}
         </ul>
         <ol>
