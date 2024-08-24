@@ -45,14 +45,14 @@ const RecipeForm = () => {
       ingredient: formData.currentIngredient,
       measurement: formData.currentMeasurement,
       quantity: formData.currentQuantity
-    };
+    } as RecipeIngredient;
     if (formData.currentIngredient.trim()) {
       setFormData((prevData) => ({
         ...prevData,
         ingredients: [...prevData.ingredients, newIngredient],
         currentIngredient: '',
         currentMeasurement: '',
-        currentQuantity: ''
+        currentQuantity: 0
       }));
     }
   };

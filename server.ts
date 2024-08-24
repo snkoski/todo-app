@@ -30,6 +30,10 @@ app.get('/', (req, res) => {
   res.send('Hello World!');
 });
 
+app.get('/test', (req, res) => {
+  res.json({ message: 'Test endpoint' });
+});
+
 app.get('/recipes', async (req, res) => {
   console.log('Fetching recipes');
   try {

@@ -50,5 +50,12 @@ export interface Measurement {
 export interface RecipeIngredient {
   ingredient: string;
   measurement: string;
-  quantity: string; // e.g., 2 (for 2 tablespoons)
+  quantity: number; // e.g., 2 (for 2 tablespoons)
+}
+
+export interface BenchReview {
+  id: string;
+  benchId: string;
+  rating: number;
+  comment: string;
 }
