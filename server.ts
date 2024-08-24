@@ -1,12 +1,12 @@
-import express from 'express';
+import express, { Express } from 'express';
 import { Pool } from 'pg';
 import cors from 'cors';
 
-const app = express();
+const app: Express = express();
 const port = 3000;
 
 const pool = new Pool({
-  user: 'shawn',
+  user: 'skoski',
   host: 'localhost',
   database: 'db',
   password: 'password',
@@ -30,6 +30,10 @@ app.get('/', (req, res) => {
   res.send('Hello World!');
 });
 
+app.get('/test', (req, res) => {
+  res.json({ message: 'Test endpoint' });
+});
+
 app.get('/recipes', async (req, res) => {
   console.log('Fetching recipes');
   try {
@@ -47,7 +51,12 @@ app.get('/todos', async (req, res) => {
   console.log('Fetching todos');
   try {
     const client = await pool.connect();
+    console.log('Connected to database:', client.database);
+    console.log('Client:', client);
+
     const result = await client.query('SELECT * FROM todos WHERE deleted = false');
+    console.log('Result:', result);
+
     client.release();
     res.json(result.rows);
   } catch (err) {
@@ -148,13 +157,54 @@ app.get('/recipes/:id', async (req, res) => {
 
   try {
     const client = await pool.connect();
-    const result = await client.query('SELECT * FROM recipes WHERE id = $1', [recipeId]);
-    client.release();
-    if (result.rows.length > 0) {
-      res.json(result.rows[0]); // return the first row
-    } else {
-      res.status(404).json({ message: 'Recipe not found' });
+
+    // Fetch the recipe details
+    const recipeQuery = `
+      SELECT id, name, description, author, image_url, source_url, created_at, modified_at
+      FROM recipes
+      WHERE id = $1
+    `;
+    const recipeResult = await client.query(recipeQuery, [recipeId]);
+
+    if (recipeResult.rows.length === 0) {
+      client.release();
+      return res.status(404).json({ message: 'Recipe not found' });
     }
+
+    const recipe = recipeResult.rows[0];
+
+    // Fetch the recipe steps
+    const stepsQuery = `
+      SELECT step_number, content
+      FROM recipe_steps
+      WHERE recipe_id = $1
+      ORDER BY step_number ASC
+    `;
+    const stepsResult = await client.query(stepsQuery, [recipeId]);
+
+    // Fetch the recipe ingredients
+    const ingredientsQuery = `
+      SELECT 
+        i.name AS ingredient,
+        ri.quantity,
+        m.name AS measurement
+      FROM recipe_ingredients ri
+      JOIN ingredients i ON ri.ingredient_id = i.id
+      JOIN measurements m ON ri.measurement_id = m.id
+      WHERE ri.recipe_id = $1
+    `;
+    const ingredientsResult = await client.query(ingredientsQuery, [recipeId]);
+
+    client.release();
+
+    // Combine the data into a single response object
+    const fullRecipe = {
+      ...recipe,
+      steps: stepsResult.rows,
+      ingredients: ingredientsResult.rows
+    };
+
+    res.json(fullRecipe);
   } catch (err) {
     console.error('Error fetching recipe', err);
     res.status(500).json({ message: 'Server error' });

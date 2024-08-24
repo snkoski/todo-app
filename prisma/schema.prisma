@@ -1,0 +1,84 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model recipes {
+  id                 Int                  @id @default(autoincrement())
+  name               String               @db.VarChar(100)
+  description        String?
+  author             String?              @db.VarChar(100)
+  image_url          String?
+  source_url         String?
+  created_at         DateTime?            @default(now()) @db.Timestamp(6)
+  modified_at        DateTime?            @default(now()) @db.Timestamp(6)
+  recipe_ingredients recipe_ingredients[]
+  recipe_steps       recipe_steps[]
+}
+
+model todos {
+  id          Int       @id @default(autoincrement())
+  title       String    @db.VarChar(255)
+  description String?
+  done        Boolean?  @default(false)
+  deleted     Boolean?  @default(false)
+  user_id     Int?
+  created_at  DateTime? @default(now()) @db.Timestamp(6)
+  modified_at DateTime? @default(now()) @db.Timestamp(6)
+  users       users?    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model ingredients {
+  id                 Int                  @id @default(autoincrement())
+  name               String               @db.VarChar(100)
+  created_at         DateTime?            @default(now()) @db.Timestamp(6)
+  modified_at        DateTime?            @default(now()) @db.Timestamp(6)
+  recipe_ingredients recipe_ingredients[]
+}
+
+model measurements {
+  id                 Int                  @id @default(autoincrement())
+  name               String               @db.VarChar(50)
+  created_at         DateTime?            @default(now()) @db.Timestamp(6)
+  modified_at        DateTime?            @default(now()) @db.Timestamp(6)
+  recipe_ingredients recipe_ingredients[]
+}
+
+model recipe_ingredients {
+  recipe_id      Int
+  ingredient_id  Int
+  measurement_id Int
+  quantity       Decimal      @db.Decimal
+  created_at     DateTime?    @default(now()) @db.Timestamp(6)
+  modified_at    DateTime?    @default(now()) @db.Timestamp(6)
+  ingredients    ingredients  @relation(fields: [ingredient_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  measurements   measurements @relation(fields: [measurement_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  recipes        recipes      @relation(fields: [recipe_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([recipe_id, ingredient_id, measurement_id])
+}
+
+model recipe_steps {
+  recipe_id   Int
+  step_number Int
+  content     String
+  created_at  DateTime? @default(now()) @db.Timestamp(6)
+  modified_at DateTime? @default(now()) @db.Timestamp(6)
+  recipes     recipes   @relation(fields: [recipe_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([recipe_id, step_number])
+}
+
+model users {
+  id          Int       @id @default(autoincrement())
+  username    String    @unique @db.VarChar(100)
+  email       String    @unique @db.VarChar(100)
+  password    String    @db.VarChar(100)
+  created_at  DateTime? @default(now()) @db.Timestamp(6)
+  modified_at DateTime? @default(now()) @db.Timestamp(6)
+  todos       todos[]
+}

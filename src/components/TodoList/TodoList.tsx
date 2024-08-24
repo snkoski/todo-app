@@ -6,6 +6,8 @@ import { useLoaderData } from 'react-router-dom';
 
 export async function loader() {
   const response = await fetch('http://localhost:3000/todos');
+  console.log('response', response);
+
   const savedTodos = await response.json();
   return { savedTodos };
 }
